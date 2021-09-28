@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: #
+    username: #
+    password: #
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: #
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+    show-sql: true
+  rabbitmq:
+    host: #
+    port: #
+    username: #
+    password: #
+    publisher-returns: off
+  cache:
+    cache-names:
+      - list
+      - bar
+    caffeine:
+      spec: maximumSize=5,expireAfterAccess=60s
+#jwt
+jwt:
+  header: Authorization+-
+  # 令牌前缀
+  token-start-with: Bearer
+  # 使用Base64对该令牌进行编码使用算法要求其大于512字节
+  base64-secret: #
+  # 令牌过期时间 此处单位/毫秒
+  token-validity-in-seconds: 14400000
