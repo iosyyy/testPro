@@ -66,7 +66,7 @@ public class TestCons {
         .data(
             new HashMap<>() {
               {
-                put("user", authentication.getName());
+                put("user", authentication.getAuthorities());
               }
             })
         .build();

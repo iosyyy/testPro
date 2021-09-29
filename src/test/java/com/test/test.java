@@ -1,7 +1,8 @@
 package com.test;
 
 import com.test.Components.Sender;
-import com.test.entry.UserIn;
+import com.test.dao.UserInfoRepository;
+import com.test.entry.UserInfo;
 import com.test.proper.JwtSecurityProperties;
 import com.test.service.UserServiceImp;
 import org.junit.jupiter.api.Test;
@@ -20,20 +21,23 @@ public class test {
   @Resource JwtSecurityProperties properties;
 
   @Resource UserServiceImp userServiceImp;
+  @Resource private UserInfoRepository userDao;
 
   @Test
   public void testUserService() {
-    UserIn build =
-        UserIn.builder()
-            .uuid("10001")
-            .userName("hellos")
-            .email("hellos")
-            .nickName("test")
-            .passWord("111")
-            .regTime("2001-07-17")
-            .icon("null")
-            .build();
-    System.out.println(userServiceImp.saveUser(build));
+    /* UserIn build =
+            UserIn.builder()
+                .uuid("10001")
+                .userName("hellos")
+                .email("hellos")
+                .nickName("test")
+                .passWord("111")
+                .regTime("2001-07-17")
+                .icon("null")
+                .build();
+    */
+    UserInfo userInfo = UserInfo.builder().id(10L).build();
+    userDao.delete(userInfo);
   }
 
   @Test

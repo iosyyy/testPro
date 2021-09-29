@@ -29,10 +29,12 @@ public class UserService implements UserServiceImp {
   }
 
   @Override
-  public boolean userLoginTest(String auth, String password) {
+  public Long userLoginTest(String auth, String password) {
     UserIn user = userDao.findByUserNameAndPassWord(auth, password);
-
-    return !Objects.isNull(user);
+    if (Objects.isNull(user)) {
+      return null;
+    }
+    return user.getId();
   }
 
   public boolean register(UserIn user) {

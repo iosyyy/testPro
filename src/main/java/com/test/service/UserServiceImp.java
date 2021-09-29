@@ -13,5 +13,7 @@ public interface UserServiceImp {
 
   UserIn saveUser(UserIn user);
 
-  boolean userLoginTest(String auth, String password);
+  Long userLoginTest(String auth, String password);
+
+  boolean register(UserIn user);
 }

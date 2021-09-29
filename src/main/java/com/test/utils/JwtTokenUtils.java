@@ -62,16 +62,14 @@ public class JwtTokenUtils implements InitializingBean {
 
   public Authentication getAuthentication(String token) {
     Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    HashMap<String, Object> map = (HashMap) claims.get("auth");
 
     Collection<? extends GrantedAuthority> authorities =
-        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+        Arrays.stream(new String[] {map.get("id").toString(), map.get("username").toString()})
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
-
-    HashMap map = (HashMap) claims.get("auth");
     User principal =
         new User(map.get("username").toString(), map.get("date").toString(), authorities);
-
     return new UsernamePasswordAuthenticationToken(principal, token, authorities);
   }
 

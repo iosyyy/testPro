@@ -7,10 +7,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
@@ -23,7 +20,9 @@ import java.util.Objects;
 @Setter
 @Builder
 public class UserIn {
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Column(nullable = false, unique = true)
   private String uuid;
@@ -56,13 +55,17 @@ public class UserIn {
 
   public UserIn() {}
 
-  protected UserIn(Long id,
-                String uuid,
-                String userName,
-                String passWord,
-                String email,
-                String nickName,
-                String regTime, Date createdAt, Date updatedAt, String icon) {
+  protected UserIn(
+      Long id,
+      String uuid,
+      String userName,
+      String passWord,
+      String email,
+      String nickName,
+      String regTime,
+      Date createdAt,
+      Date updatedAt,
+      String icon) {
     this.id = id;
     this.uuid = uuid;
     this.userName = userName;
@@ -89,7 +92,8 @@ public class UserIn {
 
   @Override
   public int hashCode() {
-    return 0;
+    return Objects.hash(
+        id, uuid, userName, passWord, email, nickName, regTime, createdAt, updatedAt, icon);
   }
 
   @Override

@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author 靖鸿宣
@@ -36,10 +37,11 @@ public class AuthController {
   @Resource private UserService userService;
   @Resource private JwtSecurityProperties jwtSecurityProperties;
 
-  private String getTokenByUsername(String username) {
+  private String getTokenByUsernameAndId(String username, Long id) {
     Map<String, Object> map = new HashMap<>();
     map.put("username", username);
     map.put("date", new Date());
+    map.put("id", id);
     return jwtTokenUtils.createToken(map);
   }
 
@@ -53,13 +55,14 @@ public class AuthController {
 
     password = DigestUtils.sha256Hex(password);
     Map<String, Object> dataMap =
-        new HashMap<String, Object>() {
+        new HashMap<>() {
           {
             put("username", username);
           }
         };
-    if (userService.userLoginTest(username, password)) {
-      String token = getTokenByUsername(username);
+    Long id = userService.userLoginTest(username, password);
+    if (!Objects.isNull(id)) {
+      String token = getTokenByUsernameAndId(username, id);
       dataMap.put("token", jwtSecurityProperties.getTokenStartWith() + " " + token);
 
       log.info("user {} login success.", username);
@@ -110,8 +113,6 @@ public class AuthController {
           }
         };
     if (userService.register(userIn)) {
-      String token = getTokenByUsername(username);
-      dataMap.put("token", jwtSecurityProperties.getTokenStartWith() + " " + token);
       log.info("user {} register success.", username);
       return ReturnResult.builder()
           .code(RETURNCODE.SUCCESS.getCode())
