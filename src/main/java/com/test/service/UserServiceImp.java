@@ -10,5 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserServiceImp {
   long getCount();
+
   UserIn saveUser(UserIn user);
+
+  boolean userLoginTest(String auth, String password);
 }

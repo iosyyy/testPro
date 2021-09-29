@@ -13,17 +13,18 @@ import javax.annotation.Resource;
 public class Sender {
   @Resource AmqpTemplate amqpTemplate;
 
-
-  public void push(){
-    amqpTemplate.convertAndSend("logs","","end");
-  }
-  public void route(){
-    amqpTemplate.convertAndSend("dirs","info","发送router消息");
+  public void push() {
+    amqpTemplate.convertAndSend("logs", "", "end");
   }
 
-  public void topic(){
-    amqpTemplate.convertAndSend("topics","info.test111","发送topic消息");
+  public void route() {
+    amqpTemplate.convertAndSend("dirs", "info", "发送router消息");
   }
+
+  public void topic() {
+    amqpTemplate.convertAndSend("topics", "info.test111", "发送topic消息");
+  }
+
   public void send(int i) {
     amqpTemplate.convertAndSend("morssss", "world");
   }

@@ -6,6 +6,9 @@ import com.test.service.UserServiceImp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author 靖鸿宣
@@ -23,5 +26,19 @@ public class UserService implements UserServiceImp {
   @Override
   public UserIn saveUser(UserIn user) {
     return userDao.save(user);
+  }
+
+  @Override
+  public boolean userLoginTest(String auth, String password) {
+    UserIn user = userDao.findByUserNameAndPassWord(auth, password);
+
+    return !Objects.isNull(user);
+  }
+
+  public boolean register(UserIn user) {
+    user.setUuid(UUID.randomUUID().toString());
+    user.setRegTime(new Date().toString());
+    UserIn save = userDao.save(user);
+    return !Objects.isNull(save);
   }
 }
