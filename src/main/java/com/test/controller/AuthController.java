@@ -2,6 +2,7 @@ package com.test.controller;
 
 import com.google.common.base.Preconditions;
 import com.test.entry.UserIn;
+import com.test.proper.JwtSecurityProperties;
 import com.test.service.serviceHandler.UserService;
 import com.test.utils.JwtTokenUtils;
 import com.test.utils.RETURNCODE;
@@ -33,6 +34,14 @@ import java.util.Map;
 public class AuthController {
   @Resource private JwtTokenUtils jwtTokenUtils;
   @Resource private UserService userService;
+  @Resource private JwtSecurityProperties jwtSecurityProperties;
+
+  private String getTokenByUsername(String username) {
+    Map<String, Object> map = new HashMap<>();
+    map.put("username", username);
+    map.put("date", new Date());
+    return jwtTokenUtils.createToken(map);
+  }
 
   @ApiOperation("登录授权")
   @PostMapping(value = "/login")
@@ -50,11 +59,9 @@ public class AuthController {
           }
         };
     if (userService.userLoginTest(username, password)) {
-      Map<String, Object> map = new HashMap<>();
-      map.put("date", new Date());
-      map.put("username", username);
-      String token = jwtTokenUtils.createToken(map);
-      dataMap.put("token", token);
+      String token = getTokenByUsername(username);
+      dataMap.put("token", jwtSecurityProperties.getTokenStartWith() + " " + token);
+
       log.info("user {} login success.", username);
       return ReturnResult.builder()
           .code(RETURNCODE.SUCCESS.getCode())
@@ -103,11 +110,8 @@ public class AuthController {
           }
         };
     if (userService.register(userIn)) {
-      Map<String, Object> map = new HashMap<>();
-      map.put("date", new Date());
-      map.put("username", username);
-      String token = jwtTokenUtils.createToken(map);
-      dataMap.put("token", token);
+      String token = getTokenByUsername(username);
+      dataMap.put("token", jwtSecurityProperties.getTokenStartWith() + " " + token);
       log.info("user {} register success.", username);
       return ReturnResult.builder()
           .code(RETURNCODE.SUCCESS.getCode())

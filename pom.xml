@@ -120,6 +120,61 @@
       <artifactId>commons-codec</artifactId>
       <version>1.14</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <version>${springboot.test.ver}</version>
+    </dependency>
   </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <fork>true</fork> <!--重要-->
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>14</source>
+          <target>14</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>companyname.lib1</id>
+      <url>http://download.companyname.org/maven2/lib1</url>
+    </repository>
+    <repository>
+      <id>companyname.lib2</id>
+      <url>http://download.companyname.org/maven2/lib2</url>
+    </repository>
+    <repository>
+      <id>alimaven</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+    <repository>
+      <id>bintray</id>
+      <url>https://dl.bintray.com/kotlin/kotlin-eap</url>
+    </repository>
+  </repositories>
 </project>

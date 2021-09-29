@@ -26,11 +26,9 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenUtils implements InitializingBean {
 
-  @Resource
-  private JwtSecurityProperties jwtSecurityProperties;
   private static final String AUTHORITIES_KEY = "auth";
+  @Resource private JwtSecurityProperties jwtSecurityProperties;
   private Key key;
-
 
   @Override
   public void afterPropertiesSet() {
@@ -39,16 +37,16 @@ public class JwtTokenUtils implements InitializingBean {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-
-  public  String createToken(Map<String, Object> claims) {
+  public String createToken(Map<String, Object> claims) {
     return Jwts.builder()
-               .claim(AUTHORITIES_KEY, claims)
-               .setId(UUID.randomUUID().toString())
-               .setIssuedAt(new Date())
-               .setExpiration(new Date((new Date()).getTime() + jwtSecurityProperties.getTokenValidityInSeconds()))
-               .compressWith(CompressionCodecs.DEFLATE)
-               .signWith(key,SignatureAlgorithm.HS512)
-               .compact();
+        .claim(AUTHORITIES_KEY, claims)
+        .setId(UUID.randomUUID().toString())
+        .setIssuedAt(new Date())
+        .setExpiration(
+            new Date((new Date()).getTime() + jwtSecurityProperties.getTokenValidityInSeconds()))
+        .compressWith(CompressionCodecs.DEFLATE)
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   public Date getExpirationDateFromToken(String token) {
@@ -63,25 +61,23 @@ public class JwtTokenUtils implements InitializingBean {
   }
 
   public Authentication getAuthentication(String token) {
-    Claims claims = Jwts.parser()
-                        .setSigningKey(key)
-                        .parseClaimsJws(token)
-                        .getBody();
+    Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 
     Collection<? extends GrantedAuthority> authorities =
-            Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                  .map(SimpleGrantedAuthority::new)
-                  .collect(Collectors.toList());
+        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
 
-    HashMap map =(HashMap) claims.get("auth");
-
-    User principal = new User(map.get("user").toString(), map.get("password").toString(), authorities);
+    HashMap map = (HashMap) claims.get("auth");
+    User principal =
+        new User(map.get("username").toString(), map.get("date").toString(), authorities);
 
     return new UsernamePasswordAuthenticationToken(principal, token, authorities);
   }
 
   public boolean validateToken(String authToken) {
     try {
+      log.info("{}", authToken);
       Jwts.parser().setSigningKey(key).parseClaimsJws(authToken);
       return true;
     } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
@@ -103,15 +99,10 @@ public class JwtTokenUtils implements InitializingBean {
   private Claims getClaimsFromToken(String token) {
     Claims claims;
     try {
-      claims = Jwts.parser()
-                   .setSigningKey(key)
-                   .parseClaimsJws(token)
-                   .getBody();
+      claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     } catch (Exception e) {
       claims = null;
     }
     return claims;
   }
 }
-
-

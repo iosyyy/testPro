@@ -37,7 +37,7 @@ public class SwaggerConfig {
         .title("还没想好要写啥的网站的api")
         .description("test001")
         .version("1.0")
-        .contact(new Contact("Authoa", "http://localhost.com", "test@qq.com"))
+        .contact(new Contact("Authoas", "http://localhost.com", "test@qq.com"))
         .build();
   }
 }

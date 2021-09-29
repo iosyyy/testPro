@@ -1,16 +1,21 @@
 package com.test.controller;
 
+import com.test.utils.RETURNCODE;
+import com.test.utils.ReturnResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -49,6 +54,22 @@ public class TestCons {
     list1.evict(length);
     list1.evictIfPresent(length);
     return list1.evictIfPresent(length);
+  }
+
+  @GetMapping("/getUser")
+  public ReturnResult getUser() {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return ReturnResult.builder()
+        .code(RETURNCODE.SUCCESS.getCode())
+        .msg(RETURNCODE.SUCCESS.getMessage())
+        .data(
+            new HashMap<>() {
+              {
+                put("user", authentication.getName());
+              }
+            })
+        .build();
   }
 
   @GetMapping("/deleteAll")
