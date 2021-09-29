@@ -1,4 +1,10 @@
 spring:
+  # todo 这里在上线或者演示的时候需要删除不然项目会一直重启
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+  freemarker:
+    cache: false    #页面不加载缓存，修改即时生效
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: #
