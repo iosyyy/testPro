@@ -1,11 +1,11 @@
 package com.test.controller;
 
+import com.test.annotation.CacheRemove;
 import com.test.utils.RETURNCODE;
 import com.test.utils.ReturnResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/23
  */
 @RestController
@@ -28,8 +25,8 @@ public class TestCons {
   @Resource CacheManager cacheManager;
 
   @GetMapping("/listAll")
-  @Cacheable(value = "list", key = "#length", sync = true)
-  public List<Integer> getAll(Long length) {
+  @Cacheable(value = "list", key = "#p0+'.'+ #p1", sync = true, cacheManager = "cacheManager")
+  public List<Integer> getAll(Long length, Long id) {
     List<Integer> list = new ArrayList<>();
     for (int i = 0; i < length; i++) {
       list.add(i);
@@ -43,17 +40,19 @@ public class TestCons {
   }
 
   @GetMapping("/lists")
-  public Object getAlls(Long length) {
-
-    Cache list1 = cacheManager.getCache("list");
-    list1.clear();
+  public Boolean getAlls(Long length) {
+    System.out.println(cacheManager.getClass().getSimpleName());
     Collection<String> cacheNames = cacheManager.getCacheNames();
     for (String cacheName : cacheNames) {
       log.info(cacheName);
     }
-    list1.evict(length);
-    list1.evictIfPresent(length);
-    return list1.evictIfPresent(length);
+    Cache list1 = cacheManager.getCache("list");
+    //    list1.evict(length);
+    //    list1.evictIfPresent(length);
+    if (!Objects.isNull(list1)) {
+      return list1.evictIfPresent(length);
+    }
+    return false;
   }
 
   @GetMapping("/getUser")
@@ -72,9 +71,17 @@ public class TestCons {
         .build();
   }
 
+  /*  @GetMapping("/deleteAll")
+  @CacheEvict(value = "list", key = "#p0+'.'+ #p1")
+  public void deleteAll(Long length, Long id) {
+    System.out.println("every thing has been delete");
+  }*/
+
   @GetMapping("/deleteAll")
-  @CacheEvict(value = "list", key = "#length")
-  public void deleteAll(Long length) {
+  @CacheRemove(
+      value = "list",
+      key = {})
+  public void deleteAll() {
     System.out.println("every thing has been delete");
   }
 }

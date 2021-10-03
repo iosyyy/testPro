@@ -1,7 +1,7 @@
 package com.test.utils;
 
 /**
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/29
  */
 public enum USE_STATE {

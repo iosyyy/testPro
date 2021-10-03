@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/23
  */
 @Component
@@ -18,7 +18,7 @@ public class Sender {
   }
 
   public void route() {
-    amqpTemplate.convertAndSend("dirs", "info", "发送router消息");
+    System.out.println(amqpTemplate.convertSendAndReceive("dirs", "info", "发送router消息"));
   }
 
   public void topic() {

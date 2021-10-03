@@ -7,7 +7,7 @@ import lombok.ToString;
 /**
  * 所有接口通用不在此处做参数检查,使用谷歌给的工具做参数检查等工作,新增变量需要指定具体在哪个接口 如果变量特别多直接新建一个方法类去写就行
  *
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/28
  */
 @Getter

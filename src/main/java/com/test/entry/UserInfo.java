@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/29
  */
 @Entity(name = "user_info")

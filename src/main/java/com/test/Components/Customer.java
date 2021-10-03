@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @author 靖鸿宣
+ * @author authoa
  * @since 2021/9/24
  */
 @Component
@@ -31,14 +31,25 @@ public class Customer {
 
   @RabbitListener(
       bindings = {
-        @QueueBinding(
-            value = @Queue,
-            exchange = @Exchange(value = "dirs"),
-            key = {"info"})
+        @QueueBinding(value = @Queue(value = "info"), exchange = @Exchange(value = "dirs"))
       })
-  public void processRoute(String hello) {
+  public String processRoute(String hello) {
     System.out.println("message1: " + hello);
+    return hello;
   }
+
+  /*
+    @RabbitListener(
+        bindings = {
+          @QueueBinding(
+              value = @Queue("infos"),
+              exchange = @Exchange(value = "dirs"),
+              key = {"infos"})
+        })
+    public void processRoutex(String hello) {
+      System.out.println("message3: " + hello);
+    }
+  */
 
   @RabbitListener(
       bindings = {
@@ -55,8 +66,8 @@ public class Customer {
       bindings = {
         @QueueBinding(
             value = @Queue,
-            exchange = @Exchange(value = "topics",type="topic"),
-            key = {"info.test","info.*"})
+            exchange = @Exchange(value = "topics", type = "topic"),
+            key = {"info.test", "info.*"})
       })
   public void processTopic1(String hello) {
     System.out.println("message1: " + hello);
@@ -66,12 +77,10 @@ public class Customer {
       bindings = {
         @QueueBinding(
             value = @Queue,
-            exchange = @Exchange(value = "topics",type="topic"),
+            exchange = @Exchange(value = "topics", type = "topic"),
             key = {"info.#"})
       })
   public void processTopic2(String hello) {
     System.out.println("message2: " + hello);
   }
-
-
 }

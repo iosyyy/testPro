@@ -125,6 +125,17 @@
       <artifactId>spring-boot-devtools</artifactId>
       <version>${springboot.test.ver}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>${springboot.test.ver}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+      <version>${springboot.test.ver}</version>
+
+    </dependency>
   </dependencies>
 
 
