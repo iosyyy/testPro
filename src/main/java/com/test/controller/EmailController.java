@@ -1,10 +1,16 @@
 package com.test.controller;
 
+import com.google.common.base.Preconditions;
+import com.test.utils.RETURNCODE;
+import com.test.utils.RequestParamWrapper;
+import com.test.utils.ReturnResult;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,17 +27,27 @@ import java.util.Objects;
 @RequestMapping("/api/email")
 @Api(tags = "邮箱验证接口")
 public class EmailController {
-  @Resource CacheManager cacheManager;
+  public static final String expr =
+      "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$";
 
-  @GetMapping("/send_email")
-  public String sendEmail(@RequestBody String email) {
-    Cache email1 = cacheManager.getCache("email");
-    if (!Objects.isNull(email1)) {
-      Cache.ValueWrapper emailCache = email1.get(email);
-      if (!Objects.isNull(emailCache)) {
-        return String.valueOf(emailCache.get());
-      }
-    }
-    return "";
+  @Resource AmqpTemplate amqpTemplate;
+  @Resource CaffeineCacheManager cacheManager;
+
+  @PostMapping("/send_email")
+  public ReturnResult sendEmail(@RequestBody RequestParamWrapper requestParamWrapper) {
+    String email = requestParamWrapper.getEmail();
+
+    Preconditions.checkArgument(Strings.isNotBlank(email), "email is empty");
+    Preconditions.checkArgument(email.matches(expr), "email is not a email");
+    String code =
+        (String) amqpTemplate.convertSendAndReceive("emailListerners", "info.email", email);
+    Cache emailCache = cacheManager.getCache("emailCache");
+    Preconditions.checkArgument(!Objects.isNull(emailCache), "email is not a email");
+    log.info("email:[{}],code:[{}]", email, code);
+    emailCache.put(email, code);
+    return ReturnResult.builder()
+        .code(RETURNCODE.SUCCESS.getCode())
+        .msg(RETURNCODE.SUCCESS.getMessage())
+        .build();
   }
 }

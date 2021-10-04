@@ -1,4 +1,4 @@
-package com.test.Components;
+package com.test.components;
 
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

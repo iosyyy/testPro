@@ -1,10 +1,11 @@
 package com.test.handlers;
 
-import com.test.utils.RETURNCODE;
 import com.test.utils.ReturnResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author authoa
@@ -15,11 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
-  public ReturnResult runtimeExceptionHandler(Exception ex) {
+  public ReturnResult runtimeExceptionHandler(Exception ex, HttpServletResponse response) {
 
-    return ReturnResult.builder()
-        .code(RETURNCODE.SERVER_ERROR.getCode())
-        .msg(RETURNCODE.SERVER_ERROR.getMessage())
-        .build();
+    return ReturnResult.builder().code(500).msg(ex.getMessage()).build();
   }
 }

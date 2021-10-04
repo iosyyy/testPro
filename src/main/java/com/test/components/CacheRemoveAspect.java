@@ -1,4 +1,4 @@
-package com.test.Components;
+package com.test.components;
 
 import com.google.common.base.Strings;
 import com.test.annotation.CacheRemove;

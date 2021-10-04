@@ -1,4 +1,4 @@
-package com.test.Components;
+package com.test.components;
 
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -67,7 +67,7 @@ public class Customer {
         @QueueBinding(
             value = @Queue,
             exchange = @Exchange(value = "topics", type = "topic"),
-            key = {"info.test", "info.*"})
+            key = {"info.email"})
       })
   public void processTopic1(String hello) {
     System.out.println("message1: " + hello);

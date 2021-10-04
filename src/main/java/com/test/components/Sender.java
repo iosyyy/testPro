@@ -1,4 +1,4 @@
-package com.test.Components;
+package com.test.components;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.test;
 
-import com.test.Components.Sender;
+import com.test.components.Sender;
 import com.test.dao.UserInfoRepository;
 import com.test.entry.UserInfo;
 import com.test.proper.JwtSecurityProperties;

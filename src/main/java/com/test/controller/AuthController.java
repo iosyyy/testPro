@@ -50,8 +50,8 @@ public class AuthController {
   public ReturnResult login(@RequestBody RequestParamWrapper user) {
     String username = user.getUsername();
     String password = user.getPassword();
-    Preconditions.checkArgument(!Strings.isEmpty(username), "parameter username is blank");
-    Preconditions.checkArgument(!Strings.isEmpty(password), "parameter password is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(username), "parameter username is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(password), "parameter password is blank");
 
     password = DigestUtils.sha256Hex(password);
     Map<String, Object> dataMap =
@@ -90,12 +90,13 @@ public class AuthController {
     String nickName = user.getNickName();
     String email = user.getEmail();
     Integer code = user.getCode();
-    Preconditions.checkArgument(!Strings.isEmpty(username), "parameter username is blank");
-    Preconditions.checkArgument(!Strings.isEmpty(password), "parameter password is blank");
-    Preconditions.checkArgument(!Strings.isEmpty(icon), "parameter icon is blank");
-    Preconditions.checkArgument(!Strings.isEmpty(email), "parameter email is blank");
-    Preconditions.checkArgument(!Strings.isEmpty(nickName), "parameter nickName is blank");
-    Preconditions.checkArgument(code != null, "parameter code is blank"); // TODO 等待后续加入邮箱验证码
+    Preconditions.checkArgument(Strings.isNotBlank(username), "parameter username is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(password), "parameter password is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(icon), "parameter icon is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(email), "parameter email is blank");
+    Preconditions.checkArgument(Strings.isNotBlank(nickName), "parameter nickName is blank");
+    Preconditions.checkArgument(
+        Objects.nonNull(code), "parameter code is blank"); // TODO 等待后续加入邮箱验证码
     password = DigestUtils.sha256Hex(password);
     UserIn userIn =
         UserIn.builder()
