@@ -65,7 +65,7 @@ public class JwtTokenUtils implements InitializingBean {
     HashMap<String, Object> map = (HashMap) claims.get("auth");
 
     Collection<? extends GrantedAuthority> authorities =
-        Arrays.stream(new String[] {map.get("id").toString(), map.get("username").toString()})
+        Arrays.stream(new String[] {"ROLE_ADMIN", map.get("username").toString()})
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     User principal =

@@ -32,13 +32,13 @@ public class EmailListener {
   @RabbitListener(
       bindings = {
         @QueueBinding(
-            value = @Queue,
+            value = @Queue("email2"),
             exchange = @Exchange(value = "emailListerners", type = "topic"),
             key = {"info.email"})
       })
   @Cacheable(value = "emailCache", sync = true, key = "#p0")
   @SneakyThrows
-  public String processTopic1(String email) {
+  public void processTopic1(String email) {
 
     Preconditions.checkArgument(Strings.isNotBlank(email), "email is empty");
     Preconditions.checkArgument(Strings.isNotBlank(mailUsername), "mailUsername is empty");
@@ -50,6 +50,5 @@ public class EmailListener {
     message.setTo(email);
     message.setFrom(mailUsername);
     mailSender.send(message);
-    return emailServiceCode;
   }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public class TestCons {
   @Resource CacheManager cacheManager;
 
   @GetMapping("/listAll")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   @Cacheable(value = "list", key = "#p0+'.'+ #p1", sync = true, cacheManager = "cacheManager")
   public List<Integer> getAll(Long length, Long id) {
     List<Integer> list = new ArrayList<>();

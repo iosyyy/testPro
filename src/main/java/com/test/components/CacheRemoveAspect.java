@@ -4,11 +4,9 @@ import com.google.common.base.Strings;
 import com.test.annotation.CacheRemove;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -40,6 +38,13 @@ public class CacheRemoveAspect {
   @Pointcut("execution(* com.test.controller.*.*(..))")
   public void test() {}
 
+  @Around("test()")
+  public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object proceed = joinPoint.proceed();
+    log.info("切面获取返回值完成proceed:[{}]", proceed);
+    return proceed;
+  }
+
   @Before("test()")
   public void doBefore(JoinPoint joinPoint) {
 
@@ -51,7 +56,6 @@ public class CacheRemoveAspect {
     // 获取即将执行的方法名
     String funcName = signature.getName();
     log.info("即将执行方法为: {}，属于{}包", funcName, declaringTypeName);
-
     // 也可以用来记录一些信息，比如获取请求的 URL 和 IP
     ServletRequestAttributes requestAttributes =
         (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
