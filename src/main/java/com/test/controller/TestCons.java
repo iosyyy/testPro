@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -96,6 +97,57 @@ public class TestCons {
           .data(null)
           .build();
     }
+  }
+
+  @PostMapping("/deleteUser")
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ReturnResult deleteUser(@RequestBody Map<String, Object> ids) {
+    Long id = Long.valueOf((Integer) ids.get("id"));
+    userInRepository.deleteById(id);
+    return ReturnResult.builder()
+        .code(RETURNCODE.SUCCESS.getCode())
+        .msg(RETURNCODE.SUCCESS.getMessage())
+        .data(null)
+        .build();
+  }
+
+  @PostMapping("/insertUser")
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ReturnResult insertUser(
+      @RequestPart("file") MultipartFile file,
+      @RequestPart("username") String username,
+      @RequestPart("password") String password,
+      @RequestPart("isAdmin") String isAdmin,
+      @RequestPart("isCold") String isCold)
+      throws IOException {
+    System.out.println(isAdmin);
+    Preconditions.checkArgument(username != null, "parameter username is null");
+    Preconditions.checkArgument(password != null, "parameter password is null");
+    Preconditions.checkArgument(isAdmin != null, "parameter isAdmin is null");
+    Preconditions.checkArgument(isCold != null, "parameter isCold is null");
+    Preconditions.checkArgument(file != null, "parameter file is null");
+    String icon = tencentOssProperties.uploadFile(file);
+
+    String passwords = DigestUtils.sha256Hex(password);
+    UserIn build =
+        UserIn.builder()
+            .isAdmin(Boolean.valueOf(isAdmin))
+            .isCold(Boolean.valueOf(isCold))
+            .userName(username)
+            .passWord(passwords)
+            .icon(icon)
+            .descition("")
+            .email(username)
+            .regTime(new Date().toLocaleString())
+            .nickName(username)
+            .uuid(UUID.randomUUID().toString())
+            .build();
+    userInRepository.save(build);
+    return ReturnResult.builder()
+        .code(RETURNCODE.SUCCESS.getCode())
+        .msg(RETURNCODE.SUCCESS.getMessage())
+        .data(null)
+        .build();
   }
 
   @PostMapping("/changeUser")
