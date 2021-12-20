@@ -20,9 +20,13 @@ public interface PersonConverter {
         expression =
             "java(org.apache.commons.lang3.time.DateFormatUtils.format(person.getBirthday(),\"yyyy-MM-dd HH:mm:ss\"))"),
     @Mapping(source = "user.age", target = "age"),
-    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "email", ignore = true),
+    @Mapping(source = "address.id", target = "addressId", defaultValue = "15"),
+    @Mapping(source = "address.name", target = "addressName")
   })
   PersonDTO domain2dto(Personal person);
 
   List<PersonDTO> domain2dto(List<Personal> people);
+
+  Personal domain2dto(PersonDTO people);
 }

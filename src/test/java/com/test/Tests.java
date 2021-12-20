@@ -8,6 +8,7 @@ import com.google.common.collect.*;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +19,16 @@ import java.util.Optional;
 public class Tests {
   @Test
   @SneakyThrows
+  public void testAll() {
+    List<Integer> list = new ArrayList<>();
+    Optional<Integer> first = list.stream().findFirst();
+    System.out.println(first.isPresent());
+  }
+
+  @Test
+  @SneakyThrows
   public void test() {
-    Preconditions.checkArgument(true,"hello world");
+    Preconditions.checkArgument(true, "hello world");
     Optional<Integer> integer = Optional.empty();
     Optional<Integer> val = Optional.of(5);
     //    System.out.println(integer.isPresent());

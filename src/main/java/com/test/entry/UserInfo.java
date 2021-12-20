@@ -52,7 +52,10 @@ public class UserInfo {
   @Column(name = "age")
   private Integer age;
 
-  protected UserInfo(
+  @Column(name = "is_admin")
+  private Boolean isAdmin;
+
+  public UserInfo(
       Long id,
       UserIn userIn,
       Date createdAt,
@@ -60,7 +63,8 @@ public class UserInfo {
       String address,
       USE_STATE state,
       SEX sex,
-      Integer age) {
+      Integer age,
+      Boolean isAdmin) {
     this.id = id;
     this.userIn = userIn;
     this.createdAt = createdAt;
@@ -69,6 +73,7 @@ public class UserInfo {
     this.state = state;
     this.sex = sex;
     this.age = age;
+    this.isAdmin = isAdmin;
   }
 
   public UserInfo() {}
@@ -93,6 +98,8 @@ public class UserInfo {
         + sex
         + ", age="
         + age
+        + ", isAdmin="
+        + isAdmin
         + '}';
   }
 
@@ -105,19 +112,20 @@ public class UserInfo {
       return false;
     }
     UserInfo userInfo = (UserInfo) o;
-    return id.equals(userInfo.id)
-        && userIn.equals(userInfo.userIn)
+    return Objects.equals(id, userInfo.id)
+        && Objects.equals(userIn, userInfo.userIn)
         && Objects.equals(createdAt, userInfo.createdAt)
         && Objects.equals(updatedAt, userInfo.updatedAt)
         && Objects.equals(address, userInfo.address)
         && state == userInfo.state
         && sex == userInfo.sex
-        && Objects.equals(age, userInfo.age);
+        && Objects.equals(age, userInfo.age)
+        && Objects.equals(isAdmin, userInfo.isAdmin);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, userIn, createdAt, updatedAt, address, state, sex, age);
+    return Objects.hash(id, userIn, createdAt, updatedAt, address, state, sex, age, isAdmin);
   }
 
   // TODO 等待后续添加更多属性

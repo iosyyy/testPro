@@ -1,6 +1,5 @@
 package com.test.proto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import java.util.Objects;
  * @since 2021/10/11
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 public class Personal {
@@ -22,6 +20,16 @@ public class Personal {
   private String email;
   private Date birthday;
   private User user;
+  private Address address;
+
+  public Personal(Long id, String name, String email, Date birthday, User user, Address address) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.birthday = birthday;
+    this.user = user;
+    this.address = address;
+  }
 
   @Override
   public String toString() {
@@ -60,5 +68,36 @@ public class Personal {
   @Override
   public int hashCode() {
     return Objects.hash(id, name, email, birthday, user);
+  }
+
+  public static class Address {
+    public Integer id;
+    public int name;
+
+    public Address(Integer id, int name) {
+      this.id = id;
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "Address{" + "id=" + id + ", name=" + name + '}';
+    }
+
+    public Integer getId() {
+      return id;
+    }
+
+    public void setId(int id) {
+      this.id = id;
+    }
+
+    public int getName() {
+      return name;
+    }
+
+    public void setName(int name) {
+      this.name = name;
+    }
   }
 }

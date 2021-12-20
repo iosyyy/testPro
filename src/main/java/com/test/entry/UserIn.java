@@ -1,7 +1,6 @@
 package com.test.entry;
 
 import lombok.Builder;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,9 +15,7 @@ import java.util.Objects;
 @Entity(name = "user")
 @Builder
 public class UserIn {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Id @GeneratedValue private Long id;
 
   @Column(nullable = false, unique = true)
   private String uuid;
@@ -49,9 +46,20 @@ public class UserIn {
   @Column(nullable = false)
   private String icon;
 
-  public UserIn() {}
+  @Column(nullable = false)
+  private String descition;
 
-  protected UserIn(
+  @Column(name = "is_admin")
+  private Boolean isAdmin;
+
+  @Column(name = "is_cold")
+  private Boolean isCold;
+
+  @OneToOne(orphanRemoval = true)
+  @JoinColumn(name = "cart_id")
+  private Cart cart;
+
+  public UserIn(
       Long id,
       String uuid,
       String userName,
@@ -61,7 +69,11 @@ public class UserIn {
       String regTime,
       Date createdAt,
       Date updatedAt,
-      String icon) {
+      String icon,
+      String descition,
+      Boolean isAdmin,
+      Boolean isCold,
+      Cart cart) {
     this.id = id;
     this.uuid = uuid;
     this.userName = userName;
@@ -72,6 +84,78 @@ public class UserIn {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.icon = icon;
+    this.descition = descition;
+    this.isAdmin = isAdmin;
+    this.isCold = isCold;
+    this.cart = cart;
+  }
+
+  public UserIn(Long id) {
+    this.id = id;
+  }
+
+  public UserIn() {}
+
+  public String getDescition() {
+    return descition;
+  }
+
+  public void setDescition(String descition) {
+    this.descition = descition;
+  }
+
+  public Boolean getCold() {
+    return isCold;
+  }
+
+  public void setCold(Boolean cold) {
+    isCold = cold;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserIn userIn = (UserIn) o;
+    return Objects.equals(id, userIn.id)
+        && Objects.equals(uuid, userIn.uuid)
+        && Objects.equals(userName, userIn.userName)
+        && Objects.equals(passWord, userIn.passWord)
+        && Objects.equals(email, userIn.email)
+        && Objects.equals(nickName, userIn.nickName)
+        && Objects.equals(regTime, userIn.regTime)
+        && Objects.equals(createdAt, userIn.createdAt)
+        && Objects.equals(updatedAt, userIn.updatedAt)
+        && Objects.equals(icon, userIn.icon)
+        && Objects.equals(isAdmin, userIn.isAdmin)
+        && Objects.equals(cart, userIn.cart);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id, uuid, userName, passWord, email, nickName, regTime, createdAt, updatedAt, icon, isAdmin,
+        cart);
+  }
+
+  public Cart getCart() {
+    return cart;
+  }
+
+  public void setCart(Cart cart) {
+    this.cart = cart;
+  }
+
+  public Boolean getAdmin() {
+    return isAdmin;
+  }
+
+  public void setAdmin(Boolean admin) {
+    isAdmin = admin;
   }
 
   public Long getId() {
@@ -152,56 +236,5 @@ public class UserIn {
 
   public void setIcon(String icon) {
     this.icon = icon;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    UserIn userIn = (UserIn) o;
-    return Objects.equals(id, userIn.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, uuid, userName, passWord, email, nickName, regTime, createdAt, updatedAt, icon);
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + "("
-        + "id = "
-        + id
-        + ", "
-        + "uuid = "
-        + uuid
-        + ", "
-        + "userName = "
-        + userName
-        + ", "
-        + "passWord = "
-        + passWord
-        + ", "
-        + "email = "
-        + email
-        + ", "
-        + "nickName = "
-        + nickName
-        + ", "
-        + "regTime = "
-        + regTime
-        + ", "
-        + "createdAt = "
-        + createdAt
-        + ", "
-        + "updatedAt = "
-        + updatedAt
-        + ")";
   }
 }

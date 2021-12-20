@@ -4,10 +4,7 @@ import com.google.common.base.Preconditions;
 import com.test.entry.UserIn;
 import com.test.proper.JwtSecurityProperties;
 import com.test.service.serviceHandler.UserService;
-import com.test.utils.JwtTokenUtils;
-import com.test.utils.RETURNCODE;
-import com.test.utils.RequestParamWrapper;
-import com.test.utils.ReturnResult;
+import com.test.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +39,10 @@ public class AuthController {
     map.put("username", username);
     map.put("date", new Date());
     map.put("id", id);
+
+    map.put(
+        "role",
+        userService.isAdmin(id) ? ROLE.ROLE_ADMIN.getMessage() : ROLE.ROLE_USER.getMessage());
     return jwtTokenUtils.createToken(map);
   }
 
@@ -60,12 +61,14 @@ public class AuthController {
             put("username", username);
           }
         };
-    Long id = userService.userLoginTest(username, password);
-    if (!Objects.isNull(id)) {
-      String token = getTokenByUsernameAndId(username, id);
+    UserIn userIn = userService.userLoginTest(username, password);
+    if (!Objects.isNull(userIn)) {
+      String token = getTokenByUsernameAndId(username, userIn.getId());
       dataMap.put("token", jwtSecurityProperties.getTokenStartWith() + " " + token);
+      dataMap.put("admin", userIn.getAdmin());
+      dataMap.put("image_url", userIn.getIcon());
 
-      log.info("user {} login success.", username);
+      log.info("user {} login success.", userIn.getId());
       return ReturnResult.builder()
           .code(RETURNCODE.SUCCESS.getCode())
           .msg(RETURNCODE.SUCCESS.getMessage())
@@ -105,10 +108,11 @@ public class AuthController {
             .email(email)
             .nickName(nickName)
             .icon(icon)
+            .isAdmin(false)
             .build();
 
     Map<String, Object> dataMap =
-        new HashMap<String, Object>() {
+        new HashMap<>() {
           {
             put("username", username);
           }

@@ -12,13 +12,15 @@ import com.test.proto.PersonDTO;
 import com.test.proto.Personal;
 import com.test.proto.User;
 import com.test.service.UserServiceImp;
-import com.test.service.serviceHandler.TestService;
+import com.test.utils.SEX;
+import com.test.utils.USE_STATE;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RDeque;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -43,11 +45,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author authoa
  * @since 2021/9/23
  */
-@SpringBootTest(classes = BaseTestConfiguration.class)
+@SpringBootTest()
 public class test {
   @Resource Sender sender;
   @Resource JavaMailSenderImpl mailSender;
   @Resource JwtSecurityProperties properties;
+  @Autowired UserInfoRepository userInfoDao;
 
   @Resource UserServiceImp userServiceImp;
   @Resource TestAsnyc testAsnyc;
@@ -57,11 +60,20 @@ public class test {
   @Resource private RedissonClient redissonClient;
   @Resource private PersonConverter personConverter;
 
-  @Resource private TestService testService;
-
   @Test
+  @SneakyThrows
   public void testService() {
-    testService.findAll(new UserIn());
+
+    UserInfo build =
+        UserInfo.builder()
+            .sex(SEX.BOY)
+            .id(2L)
+            .createdAt(new Date())
+            .updatedAt(new Date())
+            .userIn(UserIn.builder().id(11L).build())
+            .state(USE_STATE.normal)
+            .build();
+    userInfoDao.save(build);
   }
 
   @Test
@@ -81,8 +93,17 @@ public class test {
 
   @Test
   public void test() {
-    Personal person = new Personal(1L, "zhige", "zhige.me@gmail.com", new Date(), new User(1));
+    Personal person =
+        new Personal(
+            1L,
+            "zhige",
+            "zhige.me@gmail.com",
+            new Date(),
+            new User(1),
+            new Personal.Address(null, 2));
     PersonDTO personDTO = personConverter.domain2dto(person);
+    System.out.println(person.getAddress());
+    System.out.println(personDTO);
     assertNotNull(personDTO);
     assertEquals(personDTO.getId(), person.getId());
     assertEquals(personDTO.getName(), person.getName());

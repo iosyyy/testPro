@@ -1,14 +1,14 @@
 package com.test.service.serviceHandler;
 
 import com.test.dao.UserInRepository;
+import com.test.dao.UserInfoRepository;
 import com.test.entry.UserIn;
+import com.test.entry.UserInfo;
 import com.test.service.UserServiceImp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author authoa
@@ -16,7 +16,22 @@ import java.util.UUID;
  */
 @Service
 public class UserService implements UserServiceImp {
-  @Resource private UserInRepository userDao;
+  @Autowired private UserInRepository userDao;
+  @Autowired private UserInfoRepository userInfoDao;
+
+  public List<UserInfo> getUserInfo() {
+    return userInfoDao.findAll();
+  }
+
+  public boolean isAdmin(long id) {
+    Optional<UserIn> optional = userDao.findById(id);
+    if (optional.isPresent()) {
+      UserIn user1 = optional.get();
+      return user1.getAdmin();
+    } else {
+      return false;
+    }
+  }
 
   @Override
   public long getCount() {
@@ -29,12 +44,16 @@ public class UserService implements UserServiceImp {
   }
 
   @Override
-  public Long userLoginTest(String auth, String password) {
+  public UserIn userLoginTest(String auth, String password) {
     UserIn user = userDao.findByUserNameAndPassWord(auth, password);
     if (Objects.isNull(user)) {
       return null;
     }
-    return user.getId();
+    Boolean cold = user.getCold();
+    if (cold != null && cold) {
+      return null;
+    }
+    return user;
   }
 
   public boolean register(UserIn user) {
